@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
+import java.io.IOException;
+
 public class ActivityMain extends Activity {
 
     MediaPlayer mediaPlayer;
@@ -22,8 +24,7 @@ public class ActivityMain extends Activity {
         findViewById(R.id.secret_button_1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
+                if(mediaPlayer.isPlaying()) { mediaPlayer.stop();}
             }
         });
 
@@ -31,8 +32,14 @@ public class ActivityMain extends Activity {
         findViewById(R.id.secret_button_2).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mediaPlayer = MediaPlayer.create(ActivityMain.this, R.raw.ctu_ringtone);
-                mediaPlayer.start();
+                if(!mediaPlayer.isPlaying()) {
+                    try {
+                        mediaPlayer.prepare();
+                        mediaPlayer.start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -40,6 +47,7 @@ public class ActivityMain extends Activity {
         findViewById(R.id.secret_button_3).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mediaPlayer.isPlaying()) { mediaPlayer.stop();}
             }
         });
 
@@ -47,6 +55,7 @@ public class ActivityMain extends Activity {
         findViewById(R.id.secret_button_4).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mediaPlayer.isPlaying()) { mediaPlayer.stop();}
             }
         });
     }
@@ -55,13 +64,13 @@ public class ActivityMain extends Activity {
     public void onResume() {
         super.onResume();
         mediaPlayer = MediaPlayer.create(this, R.raw.ctu_ringtone);
-        mediaPlayer.start();
+        if(!mediaPlayer.isPlaying()) { mediaPlayer.start();}
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mediaPlayer.stop();
+        if(mediaPlayer.isPlaying()) { mediaPlayer.stop();}
         mediaPlayer.release();
     }
 }
